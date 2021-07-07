@@ -9,7 +9,7 @@ $password = "";
 
 $api_key_value = "tPmAT5Ab3j7F9";
 
-$api_key= $temperatura= $evento= $date= "";
+$api_key= $temperatura= $evento= $date= $name = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $api_key = test_input($_POST["api_key"]);
@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $temperatura = test_input($_POST["val"]);
 	    $evento = test_input($_POST["event"]);
         $date = test_input($_POST["date"]);
+        $name = test_input($_POST["name"]);
         
         // Create connection
         $conn = new mysqli($servername, $username, $password, $dbname);
@@ -25,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             die("Connection failed: " . $conn->connect_error);
         } 
         
-        $sql = "INSERT INTO senses (val,event,date) VALUES ('$temperatura','$evento','$date')";
+        $sql = "INSERT INTO sensors (val,event,date, name) VALUES ('$temperatura','$evento','$date','$name')";
         
         if ($conn->query($sql) === TRUE) {
             echo "New record created successfully";

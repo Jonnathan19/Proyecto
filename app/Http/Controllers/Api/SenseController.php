@@ -51,6 +51,14 @@ class SenseController extends Controller
         return view('charts.historicChart',compact('rawdata'));
     }
 
+    public function id(Sense $sense, $name)
+    {
+        $rawdata = Sense::select('val', 'date', 'name')
+        ->where('name','=',$name)
+        ->get();
+        return $rawdata;
+    }
+
     public function event(Sense $sense,$id)
     {
         $rawdata = Sense::select('val', 'date')

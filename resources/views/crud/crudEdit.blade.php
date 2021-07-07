@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="container">
+<div class="container-fluid">
     <div class="row justify-content-center">
         
         <div class="col-md-4">
@@ -17,6 +17,10 @@
                              <label for="" class="form-label">Nombre</label>
                              <input type="text" name="name" class="form-control" value="{{$sensor->name}}" >
                         </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Sede</label>
+                            <input type="text" name="campus" class="form-control" value="{{$sensor->campus}}">
+                       </div>
                         <div class="mb-3">
                              <label for="" class="form-label">Ubicación</label>
                              <input type="text" name="location" class="form-control" value="{{$sensor->location}}">

@@ -1,10 +1,10 @@
 <?php
- //Adaptar el tiempo
-for($i=0;$i<count($rawdata);$i++){
-    $time = $rawdata[$i]["date"];
-    $data = new DateTime($time);
-    $rawdata[$i]["date"]=$data->getTimestamp()*1000;
-}
+    $name=$rawdata[0]['name'];
+    for($i=0;$i<count($rawdata);$i++){
+        $time = $rawdata[$i]["date"];
+        $data = new DateTime($time);
+        $rawdata[$i]["date"]=$data->getTimestamp()*1000;
+    }
 ?>
 
 
@@ -33,12 +33,11 @@ for($i=0;$i<count($rawdata);$i++){
                                 <input type="datetime-local" name="finalDate"><br>   
                             </div>                                            
                         </div>
-                        <div>
+                        <div>                            
                             <button type="submit" class="btn btn-primary">{{ __('Filtrar') }}</button>
-                            <input type ='button' class="btn btn-primary"  value = 'Evento' onclick="location.href = '{{ route('event') }}'"/>
+                            <input type ='button' class="btn btn-primary"  value = 'Evento' onclick="location.href = '{{route('event', $name)}}'"/>
                         </div>
                     </form>
-                    
                     <figure class="highcharts-figure">                    
                         <div id="container" class="chart-container"></div>
                     </figure>                

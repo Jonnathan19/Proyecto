@@ -16,8 +16,12 @@ class CreateSensorsTable extends Migration
         Schema::create('sensors', function (Blueprint $table) {
             $table->id();
             $table->char('name');
-            $table->char('location');
-            $table->tinyText('description');
+            $table->char('campus')->nullable();
+            $table->char('location')->nullable();            
+            $table->tinyText('description')->nullable();
+            $table->float('val');
+            $table->integer('event');
+            $table->timestamp('date')->nullable();;
             $table->timestamps();
         });
     }

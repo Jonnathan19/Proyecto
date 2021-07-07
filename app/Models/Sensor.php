@@ -9,4 +9,18 @@ class Sensor extends Model
 {   
     use HasFactory;
     protected $table = 'sensors';
+    protected $fillable = [
+        'name',
+        'campus',
+        'location',
+        'description',
+        'val',
+        'event',
+        'date',
+        'name',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => SenseCreated::class,
+    ];
 }

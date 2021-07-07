@@ -54,7 +54,8 @@ class SensorController extends Controller
      */
     public function show(Sensor $sensor)
     {
-        //
+        $rawdata = Sensor::select('val', 'date')->get();
+        return view('charts.historicChart',compact('rawdata'));
     }
 
     /**
@@ -82,6 +83,7 @@ class SensorController extends Controller
         $sensors = Sensor::find($id);
 
         $sensors->name = $request->get('name');
+        $sensors->campus = $request->get('campus');
         $sensors->location = $request->get('location');
         $sensors->description = $request->get('description');
 
@@ -101,5 +103,38 @@ class SensorController extends Controller
         Sensor::find($id)->delete();
       
         return redirect('/sensors');
+    }
+
+    public function id($name)
+    {
+        $rawdata = Sensor::select('val', 'date', 'name')
+        ->where('name','=',$name)
+        ->get();        
+        return view('charts.historicChart',compact('rawdata'));
+    }
+
+    public function filter(Request $request, $name)
+    {   
+        if($request->initialDate > $request->finalDate){
+            //Alert::message('this is a test message', 'info');
+            return 0;
+        }
+        else{
+            $rawdata = Sensor::select('val', 'date')    
+            ->where('date', '>=', $request->initialDate)
+            ->where('date', '<=', $request->finalDate)
+            ->where('name', '=', $name)
+            ->get();
+            return view('charts.filter', compact('rawdata'));       
+        }         
+    }
+
+    public function event($name)
+    {           
+        $rawdata = Sensor::select('val', 'date')
+        ->where('event','=',1)
+        ->where('name','=',$name)
+        ->get();        
+        return view('charts.eventChart',compact('rawdata'));
     }
 }

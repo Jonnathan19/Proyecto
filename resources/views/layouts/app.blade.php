@@ -48,9 +48,9 @@
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
-                            @if (Route::has('historic'))
+                            @if (Route::has('sense'))
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('historic') }}">{{ __('Historico') }}</a>
+                                <a class="nav-link" href="{{ route('sense') }}">{{ __('Sensor') }}</a>
                             </li>
                             @endif
                         @else
