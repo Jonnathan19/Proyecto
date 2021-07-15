@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sensor;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SensorController extends Controller
@@ -78,17 +79,11 @@ class SensorController extends Controller
      * @param  \App\Models\Sensor  $sensor
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $name)
     {
-        $sensors = Sensor::find($id);
-
-        $sensors->name = $request->get('name');
-        $sensors->campus = $request->get('campus');
-        $sensors->location = $request->get('location');
-        $sensors->description = $request->get('description');
-
-        $sensors->save();
-        
+        Sensor::where('name', $name)        
+        ->update(['name' => $request->get('name'),'campus' => $request->get('campus'),'location' => $request->get('location'),'description' => $request->get('description')]);
+     
         return redirect('/sensors');
     }
 
@@ -98,19 +93,32 @@ class SensorController extends Controller
      * @param  \App\Models\Sensor  $sensor
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($name)
     {
-        Sensor::find($id)->delete();
+        Sensor::where('name',$name)->delete();
       
         return redirect('/sensors');
     }
 
     public function id($name)
     {
+        $dateTomorrow = new Carbon('tomorrow');
+        $dateYesterday = new Carbon('yesterday');
+        
+        $rawdata = Sensor::select('val', 'date', 'name')
+        ->where('name','=',$name)
+        ->where('date','>',$dateYesterday)
+        ->where('date','<',$dateTomorrow)
+        ->get();        
+        return view('charts.historicChart',compact('rawdata','name'));
+    }
+
+    public function historic($name)
+    {
         $rawdata = Sensor::select('val', 'date', 'name')
         ->where('name','=',$name)
         ->get();        
-        return view('charts.historicChart',compact('rawdata'));
+        return view('charts.historicChart',compact('rawdata','name'));
     }
 
     public function filter(Request $request, $name)
@@ -120,21 +128,23 @@ class SensorController extends Controller
             return 0;
         }
         else{
-            $rawdata = Sensor::select('val', 'date')    
+            
+            $rawdata = Sensor::select('val', 'date', 'name')    
             ->where('date', '>=', $request->initialDate)
             ->where('date', '<=', $request->finalDate)
             ->where('name', '=', $name)
-            ->get();
-            return view('charts.filter', compact('rawdata'));       
+            ->get(); 
+                       
+            return view('charts.historicChart', compact('rawdata','name'));       
         }         
     }
 
     public function event($name)
     {           
-        $rawdata = Sensor::select('val', 'date')
+        $rawdata = Sensor::select('val', 'date', 'name')
         ->where('event','=',1)
         ->where('name','=',$name)
         ->get();        
-        return view('charts.eventChart',compact('rawdata'));
+        return view('charts.historicChart',compact('rawdata', 'name'));
     }
 }

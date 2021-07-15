@@ -10,7 +10,7 @@
                     <h2>Nuevo sensor</h2>
                 </div>
                  <div class='card-body'>
-                     <form action="/sensors/{{$sensor->id}}" method="POST">
+                     <form action="/sensors/{{$sensor->name}}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">

@@ -1,10 +1,12 @@
 <?php
-    $name=$rawdata[0]['name'];
-    for($i=0;$i<count($rawdata);$i++){
-        $time = $rawdata[$i]["date"];
-        $data = new DateTime($time);
-        $rawdata[$i]["date"]=$data->getTimestamp()*1000;
-    }
+    if (count($rawdata)>0):
+        $name=$rawdata[0]['name'];
+        for($i=0;$i<count($rawdata);$i++){
+            $time = $rawdata[$i]["date"];
+            $data = new DateTime($time);
+            $rawdata[$i]["date"]=$data->getTimestamp()*1000;
+        }
+    endif
 ?>
 
 
@@ -15,32 +17,35 @@
         
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header text-center" >
-                    <h2>Grafica historica</h2>                    
+                <div class="card-header text-center bg-info text-white" >
+                    <h2>Grafica historica del {{$name}}</h2>                    
                 </div>
                 <div class="card-body">
-                    <form method="POST">
+                    <form action="{{route('filter', $name)}}" method="POST">
                         @csrf
-                        <h4>Inicio de la busqueda</h4>                    
-                        <div class="form-group row">
-                            <div class="form-group col-md-3">
-                                <input type="datetime-local" name="initialDate"><br>   
+                        <div class="form-row">                                              
+                            <div class="form-group col-md-5">
+                                    <label>Fecha inicial</label>
+                                    <input type="datetime-local" name="initialDate"><br>   
                             </div>                                            
-                        </div>
-                        <h4>Fin de la busqueda</h4>
-                        <div class="form-group row">                        
-                            <div class="form-group col-md-3">
-                                <input type="datetime-local" name="finalDate"><br>   
-                            </div>                                            
+                                                      
+                            <div class="form-group col-md-5">                        
+                                    <label>Fecha Final</label>
+                                    <input type="datetime-local" name="finalDate"><br>   
+                                                                           
+                            </div>
                         </div>
                         <div>                            
-                            <button type="submit" class="btn btn-primary">{{ __('Filtrar') }}</button>
-                            <input type ='button' class="btn btn-primary"  value = 'Evento' onclick="location.href = '{{route('event', $name)}}'"/>
+                            <button type="submit" class="btn  btn-outline-success text-black">{{ __('Filtrar') }}</button>
+                            <input type ='button' class="btn btn-outline-danger"  value = 'Evento' onclick="location.href = '{{route('event', $name)}}'"/>
+                            <input type ='button' class="btn btn-outline-primary"  value = 'Historico' onclick="location.href = '{{route('historic', $name)}}'"/>
                         </div>
-                    </form>
-                    <figure class="highcharts-figure">                    
-                        <div id="container" class="chart-container"></div>
-                    </figure>                
+                    </form>                                 
+                        <div class="card-body">
+                            <figure class="highcharts-figure">                    
+                                <div id="container" class="chart-container"></div>
+                            </figure>                
+                        </div>
                 </div>
             </div>
         </div>

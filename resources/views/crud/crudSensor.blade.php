@@ -5,7 +5,7 @@
     <div class="row justify-content-center">      
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header text-center">
+                <div class="card-header text-center text-white bg-info">
                     <h2>Sensores activos</h2>
                 </div>
                 <div class="card-body table-responsive">                             
@@ -16,6 +16,7 @@
                                 <th scope="col">Sede</th>
                                 <th scope="col">Ubicación</th>
                                 <th scope="col">Descripción</th>
+                                <th scope="col">Medición</th>
                                 <th scope="col">Botones</th>            
                             </tr>
                             <tbody class='table text-black text-center'>    
@@ -25,9 +26,10 @@
                                         <td>{{ $sensor->name}}</td>
                                         <td>{{ $sensor->campus}}</td> 
                                         <td>{{ $sensor->location}}</td> 
-                                        <td>{{ $sensor->description}}</td> 
+                                        <td>{{ $sensor->description}}</td>
+                                        <td>{{ $sensors->where('name',$sensor->name)->last()->val}}</td>  
                                         <td>
-                                            <form action="{{route('sensors.destroy', $sensor->id)}}" method="POST">
+                                            <form action="{{route('sensors.destroy', $sensor->name)}}" method="POST">
                                                 <input type ='button' class="btn btn-success btn-sm"  value = 'Ver' onclick="location.href = '{{route('id', $sensor->name)}}'"/>
                                                 <a href="sensors/{{$sensor->id}}/edit" class="btn btn-info text-white btn-sm">Editar</a>
                                                 @csrf

@@ -25,11 +25,12 @@ Route::get('sense', [App\Http\Controllers\SensorController::class, 'index'])->na
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('event/{name}', [App\Http\Controllers\SensorController::class, 'event'])->name('event');
+Route::post('event/{name}', [App\Http\Controllers\SensorController::class, 'event'])->name('event');
 
 Route::resource('sensors', 'App\Http\Controllers\SensorController');
 
-Route::get('/historic/{name}', [App\Http\Controllers\SensorController::class, 'id'])->name('id');
-Route::post('/historic/{name}', [App\Http\Controllers\SensorController::class, 'filter'])->name('filter');
+Route::get('/nowchart/{name}', [App\Http\Controllers\SensorController::class, 'id'])->name('id');
+Route::post('/nowchart/{name}', [App\Http\Controllers\SensorController::class, 'filter'])->name('filter');
 
-
+Route::get('/historic/{name}', [App\Http\Controllers\SensorController::class, 'historic'])->name('historic');
 
