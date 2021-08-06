@@ -34,3 +34,4 @@ Route::post('/nowchart/{name}', [App\Http\Controllers\SensorController::class, '
 
 Route::get('/historic/{name}', [App\Http\Controllers\SensorController::class, 'historic'])->name('historic');
 
+

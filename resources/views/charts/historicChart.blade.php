@@ -1,6 +1,19 @@
 <?php
+    $type="";
+    $valuemin= 27;
+    $valuemax= 30;
     if (count($rawdata)>0):
         $name=$rawdata[0]['name'];
+        $type=$rawdata[0]['type'];
+        $valuemin= 27;
+        $valuemax= 30;
+        if ($rawdata[0]['type']=="Temperatura"){
+            $type="Temperatura (°C)";
+        }elseif ($rawdata[0]['type']=="Humedad") {
+            $type="Humedad (%)";
+        }elseif ($rawdata[0]['type']=="CO2") {
+            $type="Concentración de CO2 (ppm)";
+            }
         for($i=0;$i<count($rawdata);$i++){
             $time = $rawdata[$i]["date"];
             $data = new DateTime($time);
@@ -10,41 +23,51 @@
 ?>
 
 
-@extends('layouts.app')
+@extends('layouts.master')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="row justify-content-center">
-        
+
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header text-center bg-info text-white" >
-                    <h2>Grafica historica del {{$name}}</h2>                    
+                <div class="card-header bg-info text-white" >
+                    <h2>
+                        {{$name}}
+                        <input type ='button' class="btn btn-success text-white float-right"  value = 'Regresar' onclick="location.href = '{{route('sensors.index')}}'"/>
+                        <input type ='button' class="btn btn-secondary text-white float-right mr-3"  value = 'Historico' onclick="location.href = '{{route('historic', $name)}}'"/>
+                        <input type ='button' class="btn btn-danger text-white float-right mr-3"  value = 'Evento' onclick="location.href = '{{route('event', $name)}}'"/>
+                    </h2>
                 </div>
                 <div class="card-body">
-                    <form action="{{route('filter', $name)}}" method="POST">
-                        @csrf
-                        <div class="form-row">                                              
-                            <div class="form-group col-md-5">
-                                    <label>Fecha inicial</label>
-                                    <input type="datetime-local" name="initialDate"><br>   
-                            </div>                                            
-                                                      
-                            <div class="form-group col-md-5">                        
-                                    <label>Fecha Final</label>
-                                    <input type="datetime-local" name="finalDate"><br>   
-                                                                           
+                    <hr>
+                        <form action="{{route('filter', $name)}}" method="POST">
+                            @csrf
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                        <label>Fecha inicial</label>
+                                        <input type="datetime-local" name="initialDate"><br>
+                                        @if ($errors->has('initialDate'))
+                                        <small class="form-text text-danger">{{ $errors->first('initialDate') }}</small>
+                                        @endif
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                        <label>Fecha Final</label>
+                                        <input type="datetime-local" name="finalDate"><br>
+                                        @if ($errors->has('finalDate'))
+                                        <small class="form-text text-danger">{{ $errors->first('finalDate') }}</small>
+                                        @endif
+                                </div>
+                                <div class="form-group form-inline">
+                                    <button type="submit" class="btn  btn-outline-success mt-3">{{ __('Filtrar') }}</button>
+                                </div>
                             </div>
-                        </div>
-                        <div>                            
-                            <button type="submit" class="btn  btn-outline-success text-black">{{ __('Filtrar') }}</button>
-                            <input type ='button' class="btn btn-outline-danger"  value = 'Evento' onclick="location.href = '{{route('event', $name)}}'"/>
-                            <input type ='button' class="btn btn-outline-primary"  value = 'Historico' onclick="location.href = '{{route('historic', $name)}}'"/>
-                        </div>
-                    </form>                                 
+                        </form>
+                    <hr>
                         <div class="card-body">
-                            <figure class="highcharts-figure">                    
+                            <figure class="highcharts-figure">
                                 <div id="container" class="chart-container"></div>
-                            </figure>                
+                            </figure>
                         </div>
                 </div>
             </div>
@@ -62,6 +85,7 @@
     <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
 
     <script type='text/javascript'>
+
     $(function () {
     $(document).ready(function() {
     Highcharts.setOptions({
@@ -78,7 +102,7 @@
             marginRight: 10,
             events: {
                 load: function() {
-                    
+
                 }
             }
         },
@@ -86,7 +110,7 @@
         enabled: false
         },
         title: {
-            text: 'Historico de temperatura'
+            text: "<?php echo $name; ?>"
         },
         xAxis: {
             title: {
@@ -97,12 +121,24 @@
         },
         yAxis: {
             title: {
-                text: 'Temperatura (°C)'
+                text: "<?php echo $type; ?>"
             },
             plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
+                value: "<?php echo $valuemin; ?>",
+                color: 'red',
+                dashStyle: 'shortdash',
+                width: 2,
+                label: {
+                    text: 'Valor minimo'
+                }
+            }, {
+                value: "<?php echo $valuemax; ?>",
+                color: 'red',
+                dashStyle: 'shortdash',
+                width: 2,
+                label: {
+                    text: 'Valor maximo'
+                }
             }]
         },
         tooltip: {
@@ -119,7 +155,7 @@
             enabled: false
         },
         series: [{
-            name: 'Temperatura',
+            name: "<?php echo $type; ?>",
                 data: (function() {
                     var data = [];
                 <?php
@@ -128,7 +164,16 @@
                 data.push([<?php echo $rawdata[$i]["date"];?>,<?php echo $rawdata[$i]["val"];?>]);
                 <?php } ?>
             return data;
-                })()     
+                })(),
+                zones: [{
+                    value: "<?php echo $valuemin; ?>",
+                    color: 'red'
+                }, {
+                    value: "<?php echo $valuemax; ?>",
+                    color: 'blue'
+                }, {
+                    color: 'red'
+                }, ]
         }]
     });
     });
@@ -138,5 +183,5 @@
     </script>
 
 
-    
+
 @endpush

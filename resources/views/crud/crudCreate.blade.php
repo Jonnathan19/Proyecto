@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.master')
 @section('content')
 
 <div class="container">
     <div class="row justify-content-center">
-        
+
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header text-center" >
@@ -26,8 +26,8 @@
                         </div>
                         <button type='submit' class='btn btn-success'>Confirmar</button>
                         <a href="/sensors" class="btn btn-danger" >Cancelar</a>
-                     </form>                                   
-                 </div> 
+                     </form>
+                 </div>
             </div>
         </div>
     </div>
